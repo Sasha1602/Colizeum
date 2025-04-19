@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Киберспортивная Арена Playschamp</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #0F0F0F;
+            --text-color: #FFFFFF;
+            --section-bg: #1E1E1E;
+            --accent-color: #5e3bdb;
+            --border-color: #2D2D2D;
+            --button-gradient: linear-gradient(135deg, #5e3bdb 0%, #4a2ac7 100%);
+            --base-font: 1rem;
+            --corner-radius: 0.8rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui;
+            font-size: var(--base-font);
+            line-height: 1.6;
+            background: var(--bg-color);
+            color: var(--text-color);
+            padding: 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+		a {
+  			text-decoration: none;
+  			color: white;
+		}
+
+
+        .header h1 {
+            color: var(--accent-color);
+            font-size: 2.0rem;
+            text-shadow: 0 0 8px rgba(94,59,219,0.4);
+        }
+
+        .club-photo {
+            width: 100%;
+            max-height: 50vh;
+            object-fit: cover;
+            border-radius: var(--corner-radius);
+            margin: 1rem 0;
+            border: 2px solid var(--border-color);
+        }
+
+        .info-section {
+            background: var(--section-bg);
+            padding: 1.5rem;
+            border-radius: var(--corner-radius);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+            padding-left: 0.8rem;
+        }
+
+        .price-list {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .price-item {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--corner-radius);
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-header {
+            padding: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(94,59,219,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .price-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .price-item.active .price-content {
+            max-height: 500px;
+        }
+
+        .price-item.active .price-header {
+            background: rgba(94,59,219,0.2);
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        .price-header::after {
+            content: '▼';
+            font-size: 0.8em;
+            margin-left: auto;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--accent-color);
+        }
+
+        .price-item.active .price-header::after {
+            transform: rotate(180deg);
+        }
+
+        .price-item ul {
+            padding: 1rem;
+            display: grid;
+            gap: 0.8rem;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .price-item li {
+            padding: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--section-bg);
+            border-radius: calc(var(--corner-radius) - 2px);
+        }
+
+        .price-item li span:last-child {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .booking-button {
+            display: block;
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--button-gradient);
+            color: white;
+            text-align: center;
+            border-radius: var(--corner-radius);
+            border: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            margin: 2rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .booking-button:hover {
+            transform: scale(1.02);
+        }
+
+        .contacts-list {
+            list-style: none;
+            display: grid;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contacts-list li {
+            padding: 0.8rem;
+            background: var(--bg-color);
+            border-radius: var(--corner-radius);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: var(--corner-radius);
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .menu-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            cursor: pointer;
+            display: none;
+        }
+
+        .menu-icon {
+            width: 30px;
+            height: 3px;
+            background: #5e3bdb;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .menu-icon::before,
+        .menu-icon::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 3px;
+            background: #5e3bdb;
+            transition: all 0.3s;
+        }
+
+        .menu-icon::before {
+            transform: translateY(-8px);
+        }
+
+        .menu-icon::after {
+            transform: translateY(8px);
+        }
+
+        .menu-toggle.active .menu-icon {
+            background: transparent;
+        }
+
+        .menu-toggle.active .menu-icon::before {
+            transform: rotate(45deg);
+        }
+
+        .menu-toggle.active .menu-icon::after {
+            transform: rotate(-45deg);
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 70%;
+            height: 100%;
+            background: var(--section-bg);
+            z-index: 999;
+            transition: all 0.3s;
+            padding: 2rem;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (min-width: 768px) {
+            :root {
+                --base-font: 1.05rem;
+            }
+            
+            .info-sections {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+            
+            .club-photo {
+                max-height: 400px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            :root {
+                --base-font: 1.1rem;
+            }
+            
+            .info-sections {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .booking-button {
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+	    
+	.contacts-list a li {
+            background: linear-gradient(
+                135deg, 
+                rgba(94,59,219,0.15) 0%, 
+                rgba(74,42,199,0.15) 100%
+            );
+            border: 1px solid rgba(94,59,219,0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contacts-list a li:hover {
+            background: linear-gradient(
+                135deg, 
+                rgba(94,59,219,0.25) 0%, 
+                rgba(74,42,199,0.25) 100%
+            );
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(94,59,219,0.3);
+        }
+
+        .contacts-list a li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.15),
+                transparent
+            );
+            transition: left 0.6s;
+        }
+
+        .contacts-list a li:hover::before {
+            left: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">        
+        <header class="header">
+            <h1>👾 PLAYSCHAMP 👾</h1>
+            <img src="https://avatars.mds.yandex.net/get-altay/9720767/2a0000018999e30be07d9f6b2ca93bd1d21a/XXXL" 
+                 class="club-photo" 
+                 alt="Игровая зона клуба">
+        </header>
+
+        <div class="info-sections">
+            <section class="info-section">
+                <h2 class="section-title">🕹️ О КЛУБЕ</h2>
+                <ul class="contacts-list">
+                    <li>💻 Мощные игровые ПК</li>
+                    <li>🥪 Кибер-Бар</li>
+                    <li>🕒 Работаем 24/7. Без выходных</li>
+                </ul>
+            </section>
+
+            <section class="info-section">
+                <h2 class="section-title">💰 ПРАЙС-ЛИСТ</h2>
+                <div class="price-list">
+                    <div class="price-item">
+                        <div class="price-header">🖥 Изи-Лайн</div>
+                        <div class="price-content">
+                            <ul>
+                                <li><span>Час игры</span><span>50₽</span></li>
+                                <li><span>🌇 Утро (8:00-13:00)</span><span>100₽</span></li>
+                                <li><span>🏙 День (13:00-18:00)</span><span>150₽</span></li>
+                                <li><span>🌃 Вечер (18:00-00:00)</span><span>250₽</span></li>
+                                <li><span>🌉 Ночь (00:00-8:00)</span><span>200₽</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="price-item">
+                        <div class="price-header">💻 Про-Лайн</div>
+                        <div class="price-content">
+                            <ul>
+                                <li><span>Час игры</span><span>70₽</span></li>
+                                <li><span>🌇 Утро (8:00-13:00)</span><span>150₽</span></li>
+                                <li><span>🏙 День (13:00-18:00)</span><span>250₽</span></li>
+                                <li><span>🌃 Вечер (18:00-00:00)</span><span>350₽</span></li>
+                                <li><span>🌉 Ночь (00:00-8:00)</span><span>250₽</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="price-item">
+                        <div class="price-header">🎯 Буткемп</div>
+                        <div class="price-content">
+                            <ul>
+                                <li><span>Час игры</span><span>120₽</span></li>
+                                <li><span>🌇 Утро (8:00-13:00)</span><span>250₽</span></li>
+                                <li><span>🏙 День (13:00-18:00)</span><span>450₽</span></li>
+                                <li><span>🌃 Вечер (18:00-00:00)</span><span>500₽</span></li>
+                                <li><span>🌉 Ночь (00:00-8:00)</span><span>450₽</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="price-item">
+                        <div class="price-header">🎮 PS4</div>
+                        <div class="price-content">
+                            <ul>
+                                <li><span>Час игры</span><span>120₽</span></li>
+                                <li><span>🌇 Утро (8:00-13:00)</span><span>250₽</span></li>
+                                <li><span>🏙 День (13:00-18:00)</span><span>450₽</span></li>
+                                <li><span>🌃 Вечер (18:00-00:00)</span><span>600₽</span></li>
+                                <li><span>🌉 Ночь (00:00-8:00)</span><span>500₽</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="price-item">
+                        <div class="price-header">🎮 PS5</div>
+                        <div class="price-content">
+                            <ul>
+                                <li><span>Час игры</span><span>200₽</span></li>
+                                <li><span>🌇 Утро (8:00-13:00)</span><span>400₽</span></li>
+                                <li><span>🏙 День (13:00-18:00)</span><span>700₽</span></li>
+                                <li><span>🌃 Вечер (18:00-00:00)</span><span>900₽</span></li>
+                                <li><span>🌉 Ночь (00:00-8:00)</span><span>750₽</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <button class="booking-button" onclick="handleBooking()">
+                🎮 Забронировать
+            </button>
+            
+            <section class="info-section">
+            <h2 class="section-title">📌 КОНТАКТЫ</h2>
+            <ul class="contacts-list">
+                <li>📍 ул. Рабфаковская, 30</li>
+                <li>📞 +7 (4932) 20-32-03</li>
+                <!-- Исправленные ссылки -->
+                <a href="https://vk.com/playschamp.ivanovo" 
+                   target="_blank" 
+                   onclick="Telegram.WebApp.openLink(this.href); return false;">
+                    <li>💬 Группа ВК</li>
+                </a>
+                <a href="https://ivanovo.playschamp.ru/" 
+                   target="_blank" 
+                   onclick="Telegram.WebApp.openLink(this.href); return false;">
+                    <li>🌐 Наш сайт</li>
+                </a>
+                <li>🧑🏻‍💻 Администратор всегда на связи</li>
+            </ul>
+            <div id="map"></div>
+        </section>
+        </div>
+    </div>
+
+    <!-- Яндекс.Карты -->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=154d6bf6-07b5-4ac2-ae90-0f0030739bb5&lang=ru_RU"></script>
+    <script>
+        // Инициализация Яндекс.Карты
+        ymaps.ready(init);
+
+        function init() {
+            const map = new ymaps.Map('map', {
+                center: [57.002963, 40.944181], // Координаты ул. Рабфаковская, 30
+                zoom: 19,
+                controls: ['zoomControl']
+            });
+
+            // Создание метки
+            const placemark = new ymaps.Placemark([57.005870, 40.952917], {
+                hintContent: 'Cyber Arena Playschamp',
+                balloonContent: 'ул. Рабфаковская, 30'
+            }, {
+                iconLayout: 'default#image',
+                iconImageHref: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                iconImageSize: [40, 40],
+                iconImageOffset: [-20, -40]
+            });
+
+            map.geoObjects.add(placemark);
+            map.behaviors.disable('scrollZoom');
+        }
+
+        // Telegram WebApp
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+
+        function handleBooking() {
+            const user = Telegram.WebApp.initDataUnsafe.user || {};
+            const params = new URLSearchParams({
+                start: 'booking',
+                user_id: user.id || 'unknown',
+                first_name: encodeURIComponent(user.first_name || 'Гость'),
+                username: user.username || ''
+            });
+
+            const button = document.querySelector('.booking-button');
+            button.disabled = true;
+            
+            setTimeout(() => {
+                Telegram.WebApp.openTelegramLink(`https://t.me/Playschamp_Bot`);
+                Telegram.WebApp.close();
+            }, 150);
+        }
+
+        // Мобильное меню
+        function toggleMenu() {
+            const toggle = document.querySelector('.menu-toggle');
+            toggle.classList.toggle('active');
+        }
+
+        // Раскрытие прайс-листа
+        document.querySelectorAll('.price-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const parent = header.parentElement;
+                parent.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
