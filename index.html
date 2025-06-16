@@ -34,7 +34,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
@@ -155,7 +155,7 @@
         }
 
         .booking-button {
-    max-width: 300px;
+    max-width: 600px;
     margin: 2rem auto;
     display: block;
             display: block;
@@ -276,12 +276,10 @@
             }
         }
 
-        @media (min-width: 768px) {
-            :root {
-                --base-font: clamp(0.9rem, 1vw + 0.5rem, 1.1rem);
-            }
-            
             .info-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
                 gap: 1.5rem;
@@ -290,26 +288,22 @@
             .club-photo {
                 max-height: 400px;
             }
-        }
-
-        @media (min-width: 1024px) {
-            :root {
-                --base-font: clamp(0.9rem, 1vw + 0.5rem, 1.1rem);
-            }
-            
+             
             .info-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
                 grid-template-columns: repeat(3, 1fr);
             }
             
             .booking-button {
-    max-width: 300px;
+    max-width: 200px;
     margin: 2rem auto;
     display: block;
-                max-width: 400px;
+                max-width: 600px;
                 margin-left: auto;
                 margin-right: auto;
             }
-        }
 	    
 	.contacts-list a li {
             background: linear-gradient(
@@ -375,7 +369,19 @@
     }
 
     .club-photo {
-        max-height: 35vh;
+        max-height: 20vh;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .info-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
 }
 
@@ -470,7 +476,9 @@
                 </div>
             </section>
             
-            <section class="info-section">
+            <button class="booking-button" onclick="handleBooking()">🎮 Забронировать</button>
+
+<section class="info-section">
             <h2 class="section-title">📌 КОНТАКТЫ</h2>
             <ul class="contacts-list">
                 <li>📍 ул. Рабфаковская, 30</li>
@@ -491,8 +499,6 @@
             <div id="map"></div>
         </section>
         </div>
-
-<button class="booking-button" onclick="handleBooking()">🎮 Забронировать</button>
 
     </div>
 
